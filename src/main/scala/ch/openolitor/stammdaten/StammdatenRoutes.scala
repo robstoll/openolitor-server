@@ -61,6 +61,7 @@ trait StammdatenRoutes extends HttpService with ActorReferences
   with AuslieferungLieferscheinReportService
   with AuslieferungEtikettenReportService
   with AuslieferungKorbUebersichtReportService
+  with AuslieferungKorbDetailReportService
   with KundenBriefReportService
   with DepotBriefReportService
   with ProduzentenBriefReportService
@@ -646,9 +647,17 @@ trait StammdatenRoutes extends HttpService with ActorReferences
         implicit val personId = subject.personId
         generateReport[AuslieferungId](None, generateAuslieferungKorbUebersichtReports(VorlageKorbUebersicht) _)(AuslieferungId.apply)
       } ~
+      path("(depot|tour|post)auslieferungen".r / "berichte" / "korbdetail") { _ =>
+        implicit val personId = subject.personId
+        generateReport[AuslieferungId](None, generateAuslieferungKorbDetailReports(VorlageKorbDetail) _)(AuslieferungId.apply)
+      } ~
       path("(depot|tour|post)auslieferungen".r / auslieferungIdPath / "berichte" / "korbuebersicht") { (_, auslieferungId) =>
         implicit val personId = subject.personId
         generateReport[AuslieferungId](Some(auslieferungId), generateAuslieferungKorbUebersichtReports(VorlageKorbUebersicht) _)(AuslieferungId.apply)
+      } ~
+      path("(depot|tour|post)auslieferungen".r / auslieferungIdPath / "berichte" / "korbdetail") { (_, auslieferungId) =>
+        implicit val personId = subject.personId
+        generateReport[AuslieferungId](Some(auslieferungId), generateAuslieferungKorbDetailReports(VorlageKorbDetail) _)(AuslieferungId.apply)
       } ~
       path("depotauslieferungen" / "berichte" / "lieferschein") {
         implicit val personId = subject.personId
