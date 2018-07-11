@@ -44,6 +44,7 @@ case class KorbUebersichtReportProAbotyp(
 case class KorbDetailReportProAbotyp(
   name: String,
   anzahlKoerbe: Int,
+  produkts: Seq[KorbTotalComposition],
   koerbe: Seq[KorbDetailReportProDepotTour]
 ) extends JSONSerializable
 
@@ -59,4 +60,10 @@ case class AuslieferungKorbDetailReport(
   datum: DateTime,
   anzahlKoerbe: Int,
   koerbe: Seq[KorbDetailReportProAbotyp]
+) extends JSONSerializable
+
+case class KorbTotalComposition(
+  name: String,
+  quantity: Float,
+  unit: String
 ) extends JSONSerializable
