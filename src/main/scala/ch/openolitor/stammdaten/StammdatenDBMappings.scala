@@ -963,7 +963,8 @@ trait StammdatenDBMappings extends DBMappings with LazyLogging with BaseParamete
     override def updateParameters(entity: DepotAuslieferung) = {
       super.updateParameters(entity) ++ Seq(
         column.depotId -> entity.depotId,
-        column.depotName -> entity.depotName
+        column.depotName -> entity.depotName,
+        column.lieferungId -> entity.lieferungId
       )
     }
   }
@@ -982,7 +983,8 @@ trait StammdatenDBMappings extends DBMappings with LazyLogging with BaseParamete
     override def updateParameters(entity: TourAuslieferung) = {
       super.updateParameters(entity) ++ Seq(
         column.tourId -> entity.tourId,
-        column.tourName -> entity.tourName
+        column.tourName -> entity.tourName,
+        column.lieferungId -> entity.lieferungId
       )
     }
   }
@@ -997,6 +999,12 @@ trait StammdatenDBMappings extends DBMappings with LazyLogging with BaseParamete
 
     def parameterMappings(entity: PostAuslieferung): Seq[ParameterBinder] =
       parameters(PostAuslieferung.unapply(entity).get)
+
+    override def updateParameters(entity: PostAuslieferung) = {
+      super.updateParameters(entity) ++ Seq(
+        column.lieferungId -> entity.lieferungId
+      )
+    }
   }
 
   implicit val projektVorlageMapping = new BaseEntitySQLSyntaxSupport[ProjektVorlage] {

@@ -74,6 +74,20 @@ case class AuslieferungReportEntry(
 /**
  * Auslieferung pro Depot
  */
+case class DepotAuslieferungV1(
+  id: AuslieferungId,
+  status: AuslieferungStatus,
+  depotId: DepotId,
+  depotName: String,
+  datum: DateTime,
+  anzahlKoerbe: Int,
+  //modification flags
+  erstelldat: DateTime,
+  ersteller: PersonId,
+  modifidat: DateTime,
+  modifikator: PersonId
+) extends Auslieferung
+
 case class DepotAuslieferung(
   id: AuslieferungId,
   status: AuslieferungStatus,
@@ -81,6 +95,7 @@ case class DepotAuslieferung(
   depotName: String,
   datum: DateTime,
   anzahlKoerbe: Int,
+  lieferungId: LieferungId,
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,
@@ -120,6 +135,20 @@ case class DepotAuslieferungReport(
 /**
  * Auslieferung pro Tour
  */
+case class TourAuslieferungV1(
+  id: AuslieferungId,
+  status: AuslieferungStatus,
+  tourId: TourId,
+  tourName: String,
+  datum: DateTime,
+  anzahlKoerbe: Int,
+  //modification flags
+  erstelldat: DateTime,
+  ersteller: PersonId,
+  modifidat: DateTime,
+  modifikator: PersonId
+) extends Auslieferung
+
 case class TourAuslieferung(
   id: AuslieferungId,
   status: AuslieferungStatus,
@@ -127,6 +156,7 @@ case class TourAuslieferung(
   tourName: String,
   datum: DateTime,
   anzahlKoerbe: Int,
+  lieferungId: LieferungId,
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,
@@ -168,11 +198,24 @@ case class TourAuslieferungReport(
 /**
  * Auslieferung zur Post
  */
+case class PostAuslieferungV2(
+  id: AuslieferungId,
+  status: AuslieferungStatus,
+  datum: DateTime,
+  anzahlKoerbe: Int,
+  //modification flags
+  erstelldat: DateTime,
+  ersteller: PersonId,
+  modifidat: DateTime,
+  modifikator: PersonId
+) extends Auslieferung
+
 case class PostAuslieferung(
   id: AuslieferungId,
   status: AuslieferungStatus,
   datum: DateTime,
   anzahlKoerbe: Int,
+  lieferungId: LieferungId,
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,
@@ -186,6 +229,7 @@ case class PostAuslieferungDetail(
   datum: DateTime,
   anzahlKoerbe: Int,
   koerbe: Seq[KorbDetail],
+  lieferungId: LieferungId,
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,
@@ -200,6 +244,7 @@ case class PostAuslieferungReport(
   anzahlKoerbe: Int,
   projekt: ProjektReport,
   koerbe: Seq[KorbReport],
+  lieferungId: LieferungId,
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,

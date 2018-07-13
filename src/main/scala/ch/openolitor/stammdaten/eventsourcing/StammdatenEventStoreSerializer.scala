@@ -184,8 +184,14 @@ trait StammdatenEventStoreSerializer extends StammdatenJsonProtocol with EntityS
 
   implicit val tourAuslieferungModifyPersister = persister[TourAuslieferungModify]("tour-auslieferung-modify")
   implicit val depotAuslieferungPersister = persister[DepotAuslieferung]("depot-auslieferung")
+  implicit val depotAuslieferungV2Persister = persister[DepotAuslieferung, V2]("depot-auslieferung", from[V1]
+    .to[V2](_.update('lieferungId ! set[Option[LieferungId]](None))))
   implicit val tourAuslieferungPersister = persister[TourAuslieferung]("tour-auslieferung")
+  implicit val tourAuslieferungV2Persister = persister[TourAuslieferung, V2]("tour-auslieferung", from[V1]
+    .to[V2](_.update('lieferungId ! set[Option[LieferungId]](None))))
   implicit val postAuslieferungPersister = persister[PostAuslieferung]("post-auslieferung")
+  implicit val postAuslieferungV2Persister = persister[PostAuslieferung, V2]("post-auslieferung", from[V1]
+    .to[V2](_.update('lieferungId ! set[Option[LieferungId]](None))))
 
   implicit val auslieferungAlsAusgeliefertMarkierenEventPersister = persister[AuslieferungAlsAusgeliefertMarkierenEvent, V2]("auslieferung-als-ausgeliefert-markieren-event", V1toV2metaDataMigration)
   implicit val sammelbestellungAlsAbgerechnetMarkierenEventPersister = persister[SammelbestellungAlsAbgerechnetMarkierenEvent, V2]("bestellung-als-ausgeliefert-markieren-event", V1toV2metaDataMigration) // use the same identifier as before with bestellung; the structure is the same
@@ -272,9 +278,9 @@ trait StammdatenEventStoreSerializer extends StammdatenJsonProtocol with EntityS
     korbCreatePersister,
     korbModifyAuslieferungPersister,
     tourAuslieferungModifyPersister,
-    depotAuslieferungPersister,
-    tourAuslieferungPersister,
-    postAuslieferungPersister,
+    depotAuslieferungV2Persister,
+    tourAuslieferungV2Persister,
+    postAuslieferungV2Persister,
     auslieferungIdPersister,
     vorlageCreatePersister,
     vorlageModifyPersister,
