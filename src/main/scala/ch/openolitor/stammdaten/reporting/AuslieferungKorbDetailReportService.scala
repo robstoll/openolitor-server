@@ -72,6 +72,12 @@ trait AuslieferungKorbDetailReportService extends AsyncConnectionPoolContextAwar
               (abotypName, auslieferungen groupBy (auslieferung => auslieferung.depot.map(_.name) orElse (auslieferung.tour map (_.name)) getOrElse "Post") mapValues (_.size))
           }) map {
             case (abotypName, proDepotTour) =>
+              logger.debug(s"-----------------------------------------------  proDepotTour: $proDepotTour")
+              logger.debug(s"-----------------------------------------------  abotypName: $abotypName")
+              logger.debug(s"-----------------------------------------------  auslieferungReport: $auslieferungReport")
+              logger.debug(s"-----------------------------------------------  auslieferungId: $auslieferungIds")
+              //stammdatenReadRepository.getLieferpositionen()
+
               val prod1 = KorbTotalComposition("caca", 3, "kg")
               val prod2 = KorbTotalComposition("coco", 1, "kg")
               KorbDetailReportProAbotyp(abotypName, proDepotTour.values.sum, List(prod1, prod2), (proDepotTour map (p => KorbDetailReportProDepotTour(p._1, p._2))).toSeq)

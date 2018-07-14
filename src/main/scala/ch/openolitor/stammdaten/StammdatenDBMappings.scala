@@ -78,6 +78,7 @@ trait StammdatenDBMappings extends DBMappings with LazyLogging with BaseParamete
   implicit val optionAuslieferungIdBinder: Binders[Option[AuslieferungId]] = optionBaseIdBinders(AuslieferungId.apply _)
   implicit val einladungIdBinder: Binders[EinladungId] = baseIdBinders(EinladungId.apply _)
   implicit val kontoDatenIdBinder: Binders[KontoDatenId] = baseIdBinders(KontoDatenId.apply _)
+  implicit val optionLieferungIdBinder: Binders[Option[LieferungId]] = optionBaseIdBinders(LieferungId.apply _)
 
   implicit val pendenzStatusBinders: Binders[PendenzStatus] = toStringBinder(PendenzStatus.apply)
   implicit val rhythmusBinders: Binders[Rhythmus] = toStringBinder(Rhythmus.apply)

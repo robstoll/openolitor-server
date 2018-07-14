@@ -95,7 +95,7 @@ case class DepotAuslieferung(
   depotName: String,
   datum: DateTime,
   anzahlKoerbe: Int,
-  lieferungId: LieferungId,
+  lieferungId: Option[LieferungId],
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,
@@ -156,7 +156,7 @@ case class TourAuslieferung(
   tourName: String,
   datum: DateTime,
   anzahlKoerbe: Int,
-  lieferungId: LieferungId,
+  lieferungId: Option[LieferungId],
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,
@@ -215,7 +215,7 @@ case class PostAuslieferung(
   status: AuslieferungStatus,
   datum: DateTime,
   anzahlKoerbe: Int,
-  lieferungId: LieferungId,
+  lieferungId: Option[LieferungId],
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,
@@ -229,7 +229,6 @@ case class PostAuslieferungDetail(
   datum: DateTime,
   anzahlKoerbe: Int,
   koerbe: Seq[KorbDetail],
-  lieferungId: LieferungId,
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,
@@ -244,7 +243,6 @@ case class PostAuslieferungReport(
   anzahlKoerbe: Int,
   projekt: ProjektReport,
   koerbe: Seq[KorbReport],
-  lieferungId: LieferungId,
   //modification flags
   erstelldat: DateTime,
   ersteller: PersonId,
