@@ -35,6 +35,7 @@ import ch.openolitor.stammdaten.models._
 import ch.openolitor.stammdaten.repositories.StammdatenReadRepositoryAsyncComponent
 import ch.openolitor.util.IdUtil
 import org.joda.time.DateTime
+import scala.util.{ Failure, Success }
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -66,26 +67,28 @@ trait AuslieferungKorbDetailReportService extends AsyncConnectionPoolContextAwar
       _ map { projekt =>
         val projektReport = copyTo[Projekt, ProjektReport](projekt)
         stammdatenReadRepository.getMultiAuslieferungReport(auslieferungIds, projektReport) map { auslieferungReport =>
-
           val proAbotyp = (auslieferungReport.entries groupBy (groupIdentifier) map {
             case (abotypName, auslieferungen) =>
-              (abotypName, auslieferungen groupBy (auslieferung => auslieferung.depot.map(_.name) orElse (auslieferung.tour map (_.name)) getOrElse "Post") mapValues (_.size))
+              val totalLieferpositionenList = auslieferungen flatMap { auslieferung => auslieferung.korb.lieferpositionen }
+              val factorizedLieferpositionenList = totalLieferpositionenList.distinct map {
+                lp: Lieferposition =>
+                  {
+                    val numberOfTimes = totalLieferpositionenList.filter(_.id == lp.id).length
+                    val quantity = lp.menge.getOrElse(BigDecimal(0)).doubleValue()
+                    KorbTotalComposition(lp.id.toString, lp.produktBeschrieb, quantity * numberOfTimes, lp.einheit.toString)
+                  }
+              }
+              (
+                abotypName,
+                factorizedLieferpositionenList,
+                auslieferungen groupBy (auslieferung => auslieferung.depot.map(_.name) orElse (auslieferung.tour map (_.name)) getOrElse "Post") mapValues (_.size)
+              )
           }) map {
-            case (abotypName, proDepotTour) =>
-              logger.debug(s"-----------------------------------------------  proDepotTour: $proDepotTour")
-              logger.debug(s"-----------------------------------------------  abotypName: $abotypName")
-              logger.debug(s"-----------------------------------------------  auslieferungReport: $auslieferungReport")
-              logger.debug(s"-----------------------------------------------  auslieferungId: $auslieferungIds")
-              //stammdatenReadRepository.getLieferpositionen()
-
-              val prod1 = KorbTotalComposition("caca", 3, "kg")
-              val prod2 = KorbTotalComposition("coco", 1, "kg")
-              KorbDetailReportProAbotyp(abotypName, proDepotTour.values.sum, List(prod1, prod2), (proDepotTour map (p => KorbDetailReportProDepotTour(p._1, p._2))).toSeq)
+            case (abotypName, lp, proDepotTour) =>
+              KorbDetailReportProAbotyp(abotypName, proDepotTour.values.sum, (proDepotTour map (p => KorbDetailReportProDepotTour(p._1, lp, p._2))).toSeq)
           }
 
           val datum = if (!auslieferungReport.entries.isEmpty) auslieferungReport.entries(0).datum else new DateTime()
-
-          logger.debug(s"-----------------------------------------------  datum: $datum proAbotyp: $proAbotyp ")
 
           (Seq(), List(MultiReport(MultiReportId(IdUtil.positiveRandomId), Seq(
             AuslieferungKorbDetailReport(
