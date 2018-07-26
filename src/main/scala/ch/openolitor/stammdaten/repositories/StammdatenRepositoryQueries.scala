@@ -1894,8 +1894,22 @@ trait StammdatenRepositoryQueries extends LazyLogging with StammdatenDBMappings 
       } yield {
         val ansprechpersonen = personen.filter(_.kundeId == kunde.id)
         val zusatzAbosString = (zusatzAbos filter (_.hauptAboId == korbAbo.id) map (_.abotypName)).mkString(", ")
+        val zusatzAbosList = (zusatzAbos filter (_.hauptAboId == korbAbo.id))
         val kundeReport = copyTo[Kunde, KundeReport](kunde, "personen" -> ansprechpersonen)
-        val lp = lieferpositionen.filter(_.lieferungId == korb.lieferungId)
+        val lp = lieferpositionen flatMap {
+          lieferposition =>
+            {
+              val zusatzKoerbe = zusatzAbosList flatMap {
+                zusatzabo => koerbe.filter(_.aboId == zusatzabo.id)
+              }
+
+              val isInZusatzKorb = zusatzKoerbe.filter(_.lieferungId == lieferposition.lieferungId).nonEmpty
+
+              if (lieferposition.lieferungId == korb.lieferungId || isInZusatzKorb) {
+                Some(lieferposition)
+              } else None
+            }
+        }
 
         copyTo[Korb, KorbReport](korb, "abo" -> korbAbo, "abotyp" -> abotyp, "kunde" -> kundeReport, "zusatzAbosString" -> zusatzAbosString, "lieferpositionen" -> lp)
       }
